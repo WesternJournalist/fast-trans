@@ -2,7 +2,7 @@
 # fasttrans v0.01
 
 import sys
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, Qt
 import http.client
 import hashlib
 import json
@@ -10,8 +10,15 @@ import urllib.parse
 import random
 import re
 import ctypes
-from aip import AipOcr  # baidu ai接口
+from pathlib import Path
 
+from aip import AipOcr  # baidu ai接口
+errormsg = {
+    0 : '未找到配置文件!',
+    1 : 'AppID或秘钥配置错误!',
+    2 : '无网络连接!',
+    3 : ''
+}
 
 class baidu_translate(QtCore.QObject):
 
@@ -29,25 +36,44 @@ class baidu_translate(QtCore.QObject):
         self.q = ''
         self.fromLang = ''
         self.toLang = ''
-        self.getuserkeys()
 
-    def getuserkeys(self):
-        try:
+    def getcfgdata(self):
+        cfgfile = Path('config.json')
+        if cfgfile.is_file():
             with open("config.json", 'r') as conf:
                 config = json.load(conf)
             self.appid = config['AppID']
             self.secretKey = config['SecretKey']
             self.apiKey = config['APIKey']
-            self.client = AipOcr(self.appid, self.apiKey, self.secretKey)
-            self.ocrinit = True
-        except Exception:
-            self.ocrinit = False
+            return 1
+        else:
+            return 0
+
+    def savecfgdata(self):
+        file =  open("config.json", 'w+')
+        config = {
+            'AppID' : self.appid,
+            'SecretKey' : self.secretKey,
+            'APIKey' : self.apiKey
+        }
+        json.dump(config,file,ensure_ascii=False)
+        file.close()
+
+
+    def showDialog(self, errcode):
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setIcon(QtWidgets.QMessageBox.Information)
+        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        msg = errormsg[errcode]
+        msgBox.setText(msg)
+        msgBox.exec()
 
     def imagetotext(self, filePath):
         # image = self.get_file_content(filePath)
+        client = AipOcr(self.appid, self.apiKey, self.secretKey)
         try:
             image = self.get_file_content(filePath)
-            texts = self.client.basicGeneral(image)
+            texts = client.basicGeneral(image)
             ret = ""
             for words in texts["words_result"]:
                 ret = ret + "".join(words.get("words", ""))
@@ -65,7 +91,7 @@ class baidu_translate(QtCore.QObject):
         self.toLang = paras['tolang']
         self.trans(paras)
 
-    def trans(self, paras: dict):
+    def trans(self):
         appid = '20151113000005349'
         secretKey = 'osubCEzlGjzvw8qdQc41'
         salt = random.randint(32768, 65536)
@@ -86,6 +112,81 @@ class baidu_translate(QtCore.QObject):
                 self.transresut.emit('error:' + str(js['error_code']) + str(js['error_msg']))
         except Exception as e:
             self.transresult.emit('网络连接错误')
+
+class setting(QtWidgets.QWidget):
+
+    def __init__(self):
+        super(setting,self).__init__()
+        self.label1 = QtWidgets.QLabel('设置百度云OCR参数',self)
+        self.label2 = QtWidgets.QLabel('AppID:',self)
+        self.label3 = QtWidgets.QLabel('APIKey:',self)
+        self.label4 = QtWidgets.QLabel('SecretKey:',self)
+        self.label5 = QtWidgets.QLabel('',self)
+        self.text_appid = QtWidgets.QLineEdit()
+        self.text_apikey = QtWidgets.QLineEdit()
+        self.text_seckey = QtWidgets.QLineEdit()
+
+        self.btn_ok = QtWidgets.QPushButton('确定',self)
+        self.btn_ok.clicked.connect(self.confirm)
+        self.btn_cancel = QtWidgets.QPushButton('取消',self)
+        self.btn_cancel.clicked.connect(self.cancel)
+        self.groupbox = QtWidgets.QGroupBox('百度云OCR参数',self)
+        self.v_box = QtWidgets.QVBoxLayout()
+        self.h_box1 = QtWidgets.QHBoxLayout()
+        self.h_box2 = QtWidgets.QHBoxLayout()
+        self.h_box3 = QtWidgets.QHBoxLayout()
+        self.h_box4 = QtWidgets.QHBoxLayout()
+        self.h_box0 = QtWidgets.QHBoxLayout()
+
+        self.trans = baidu_translate()
+        self.initlayout()
+        self.fillingtextbox()
+
+    def initlayout(self):
+        self.label5.setOpenExternalLinks(True)
+        self.label5.setText("<a href=\"https://login.bce.baidu.com/?account=&redirect=http%3A%2F%2Fconsole.bce.baidu.com%2Fai%2F%3Ffromai%3D1#/ai/ocr/overview/index\">单击注册百度AIP")
+        self.h_box1.addWidget(self.label2)
+        self.h_box1.addStretch(1)
+        self.h_box1.addWidget(self.text_appid)
+        self.h_box2.addWidget(self.label3)
+        self.h_box2.addStretch(1)
+        self.h_box2.addWidget(self.text_apikey)
+        self.h_box3.addWidget(self.label4)
+        self.h_box3.addStretch(1)
+        self.h_box3.addWidget(self.text_seckey)
+        self.h_box4.addWidget(self.btn_ok)
+        self.h_box4.addWidget(self.btn_cancel)
+        self.v_box.addWidget(self.label1)
+        self.v_box.addLayout(self.h_box1)
+        self.v_box.addLayout(self.h_box2)
+        self.v_box.addLayout(self.h_box3)
+        self.v_box.addWidget(self.label5)
+        self.v_box.addStretch(1)
+        self.v_box.addLayout(self.h_box4)
+        self.groupbox.setLayout(self.v_box)
+        self.groupbox.alignment = 0
+        # self.groupbox.resize(300,300)
+        self.h_box0.addWidget(self.groupbox, stretch=0)
+        self.setLayout(self.h_box0)
+        self.setWindowTitle("翻译助手 v0.1")
+        self.resize(300, 250)
+
+    def fillingtextbox(self):
+        if self.trans.getcfgdata():
+            self.text_appid.setText(self.trans.appid)
+            self.text_seckey.setText(self.trans.secretKey)
+            self.text_apikey.setText(self.trans.apiKey)
+            return 1
+        else:
+            return 0
+
+    def confirm(self):
+        self.trans.savecfgdata()
+        self.close()
+
+    def cancel(self):
+        self.close()
+
 
 class fasttrans(QtWidgets.QWidget):
 
@@ -108,11 +209,13 @@ class fasttrans(QtWidgets.QWidget):
         # self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(self.update)
         self.clipboard = QtWidgets.QApplication.clipboard()
-
         self.btn_trans = QtWidgets.QPushButton("翻译", self)
+        self.btn_trans.setToolTip('使用百度翻译引擎翻译')
         self.btn_trans.clicked.connect(self.translate)
-        self.btn_shotscrn = QtWidgets.QPushButton("截图识别", self)
+        self.btn_shotscrn = QtWidgets.QPushButton("截图翻译", self)
+        self.btn_shotscrn.setToolTip('点击框选文字进行翻译')
         self.btn_shotscrn.clicked.connect(self.shootScreen)
+        self.btn_setting = QtWidgets.QPushButton('截图翻译设置',self)
         self.lb1 = QtWidgets.QLabel('源语言')
         self.lb2 = QtWidgets.QLabel('目标语言')
         self.lb3 = QtWidgets.QLabel('原文字:')
@@ -123,8 +226,10 @@ class fasttrans(QtWidgets.QWidget):
         self.v_box2 = QtWidgets.QVBoxLayout()
         self.h_box = QtWidgets.QHBoxLayout()
         self.check_box1 = QtWidgets.QCheckBox('监视剪贴板', self)
+        self.check_box1.setToolTip('监视剪贴板内容发生改变时自动进行翻译')
         self.check_box1.toggle()
         self.check_box2 = QtWidgets.QCheckBox('文字去回车', self)
+        self.check_box2.setToolTip('自动去除剪贴板内文字中的回车(多用于从pdf文件复制的内容)')
         self.check_box2.toggle()
         # self.systray = QtWidgets.QSystemTrayIcon(self) #创建托盘
         # self.systray.setIcon(QtGui.QIcon(self.logo))
@@ -136,7 +241,8 @@ class fasttrans(QtWidgets.QWidget):
         self.resize(600, 600)
 
         self.transobj = baidu_translate() # 创建一个百度翻译对象
-        if self.transobj.ocrinit:
+
+        if self.transobj.getcfgdata():
             self.btn_shotscrn.setEnabled(True)
         else:
             self.btn_shotscrn.setEnabled(False)
@@ -174,6 +280,7 @@ class fasttrans(QtWidgets.QWidget):
         self.v_box2.addStretch(1)
         self.v_box2.addWidget(self.btn_trans)
         self.v_box2.addWidget(self.btn_shotscrn)
+        self.v_box2.addWidget(self.btn_setting)
         self.v_box2.addStretch(1)
         self.h_box.addLayout(self.v_box1)
         self.h_box.addLayout(self.v_box2)
@@ -235,6 +342,8 @@ class fasttrans(QtWidgets.QWidget):
 if __name__ =='__main__':
     app = QtWidgets.QApplication(sys.argv)
     ft = fasttrans()
+    setting = setting()
+    ft.btn_setting.clicked.connect(setting.show)
     ft.show()
     sys.exit(app.exec_())
 
