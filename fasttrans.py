@@ -89,7 +89,7 @@ class baidu_translate(QtCore.QObject):
         self.q = paras['src']
         self.fromLang = paras['fromlang']
         self.toLang = paras['tolang']
-        self.trans(paras)
+        self.trans()
 
     def trans(self):
         appid = '20151113000005349'
@@ -206,8 +206,7 @@ class fasttrans(QtWidgets.QWidget):
         self.transparas = {'src': '', 'fromlang': '', 'tolang': ''}
         self.text_src = QtWidgets.QTextEdit()
         self.text_dst = QtWidgets.QTextEdit()
-        # self.timer = QtCore.QTimer()
-        # self.timer.timeout.connect(self.update)
+
         self.clipboard = QtWidgets.QApplication.clipboard()
         self.btn_trans = QtWidgets.QPushButton("翻译", self)
         self.btn_trans.setToolTip('使用百度翻译引擎翻译')
@@ -312,7 +311,7 @@ class fasttrans(QtWidgets.QWidget):
     def capture(self):  # 调用微信截图
         # 未完成的功能，现在暂时调用微信的截图dll，无法获取其回调函数，无法实现隐藏窗口
         try:
-            dll = ctypes.cdll.LoadLibrary('PrScrn.dll')
+            dll = ctypes.cdll.LoadLibrary('.\PrScrn.dll')
         except Exception:
             self.errorsignal.emit("PrScrn.Dll加载出错!")
             return
