@@ -2,7 +2,7 @@
 # fasttrans v0.01
 
 import sys
-from PyQt5 import QtWidgets, QtCore, Qt
+from PyQt5 import QtWidgets, QtCore
 import http.client
 import hashlib
 import json
