@@ -2,23 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="902595eb-5fe2-4054-a7a8-49159dcdf9df" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/fasttrans_ui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/capture.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/capture.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/Analysis-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/Analysis-00.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/COLLECT-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/COLLECT-00.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/EXE-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/EXE-00.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/PKG-00.pkg" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/PKG-00.pkg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/PYZ-00.pyz" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/PYZ-00.pyz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/PYZ-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/PYZ-00.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/base_library.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/fasttrans.exe" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/fasttrans.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/fasttrans/warn-fasttrans.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/fasttrans/warn-fasttrans.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/fasttrans/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/dist/fasttrans/base_library.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/fasttrans/fasttrans.exe" beforeDir="false" afterPath="$PROJECT_DIR$/dist/fasttrans/fasttrans.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/fasttrans/temp.png" beforeDir="false" afterPath="$PROJECT_DIR$/dist/fasttrans/temp.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fasttrans.py" beforeDir="false" afterPath="$PROJECT_DIR$/fasttrans.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
